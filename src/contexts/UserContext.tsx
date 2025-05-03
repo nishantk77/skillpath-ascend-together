@@ -3,6 +3,7 @@ import { createContext, useState, useContext, ReactNode, useEffect } from "react
 import { User, AdminCredentials } from "@/types";
 import { adminCredentials } from "@/data/mockData";
 import { toast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 type UserContextType = {
   user: User | null;
@@ -168,6 +169,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       title: "Logged out",
       description: "You have been successfully logged out",
     });
+    
+    // No need for navigate here as we'll handle it in the Header component
   };
 
   const updateUser = (userData: Partial<User>) => {

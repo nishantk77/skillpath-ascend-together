@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,12 @@ import { BookOpen, Award, List, LogOut } from "lucide-react";
 export default function Header() {
   const { user, isAdmin, logout } = useUser();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className="bg-white border-b sticky top-0 z-30">
@@ -78,7 +84,7 @@ export default function Header() {
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -151,7 +157,7 @@ export default function Header() {
                     </Link>
                     <button
                       onClick={() => {
-                        logout();
+                        handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
                       className="text-lg font-medium text-red-500 text-left"
