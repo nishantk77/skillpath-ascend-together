@@ -11,7 +11,7 @@ export default function LoginPage() {
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold">Log In to SkillPath</h1>
             <p className="text-gray-600 mt-2">
-              Continue your learning journey
+              Admin access to SkillPath platform
             </p>
           </div>
           

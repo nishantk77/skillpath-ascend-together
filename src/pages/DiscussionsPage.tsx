@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useDiscussion } from "@/contexts/DiscussionContext";
 import { useUser } from "@/contexts/UserContext";
@@ -12,6 +12,7 @@ export default function DiscussionsPage() {
   const { discussions } = useDiscussion();
   const { isAuthenticated } = useUser();
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   
   // Filter discussions based on search term
   const filteredDiscussions = discussions.filter(discussion => 

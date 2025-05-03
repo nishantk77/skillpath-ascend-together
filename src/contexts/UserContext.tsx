@@ -1,14 +1,13 @@
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { User, AdminCredentials } from "@/types";
-import { sampleUser, adminCredentials } from "@/data/mockData";
+import { adminCredentials } from "@/data/mockData";
 import { toast } from "@/components/ui/use-toast";
 
 type UserContextType = {
   user: User | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
   adminLogin: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
@@ -43,47 +42,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!user;
   const isAdmin = user?.role === "admin";
-
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // In a real app, this would be an API call
-    // Simulating API latency
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // For demo purposes - accept any email with a password
-    if (email && password) {
-      if (email === sampleUser.email) {
-        setUser(sampleUser);
-        toast({
-          title: "Welcome back!",
-          description: `Logged in as ${sampleUser.name}`,
-        });
-        return true;
-      } else {
-        // Create a new user for demo purposes
-        const newUser: User = {
-          ...sampleUser,
-          id: `user-${Date.now()}`,
-          name: email.split('@')[0],
-          email,
-          xp: 0,
-          badges: [],
-          joinDate: new Date()
-        };
-        setUser(newUser);
-        toast({
-          title: "Account created!",
-          description: "Welcome to SkillPath",
-        });
-        return true;
-      }
-    }
-    toast({
-      title: "Login failed",
-      description: "Please check your credentials and try again",
-      variant: "destructive",
-    });
-    return false;
-  };
 
   const adminLogin = async (username: string, password: string): Promise<boolean> => {
     // Simulate API latency
@@ -156,7 +114,6 @@ export function UserProvider({ children }: { children: ReactNode }) {
       user, 
       isAuthenticated, 
       isAdmin,
-      login, 
       adminLogin,
       logout, 
       updateUser,
