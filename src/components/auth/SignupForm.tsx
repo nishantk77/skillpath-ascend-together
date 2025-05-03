@@ -14,7 +14,7 @@ export default function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useUser();
+  const { userSignup } = useUser();
   const navigate = useNavigate();
 
   const handleSignup = async (e: FormEvent) => {
@@ -48,9 +48,7 @@ export default function SignupForm() {
     }
 
     setIsLoading(true);
-    // In a real app, this would be a separate signup API call
-    // For demo, we're using the same login function
-    const success = await login(email, password);
+    const success = await userSignup(email, password);
     setIsLoading(false);
 
     if (success) {

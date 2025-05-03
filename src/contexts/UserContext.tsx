@@ -9,6 +9,8 @@ type UserContextType = {
   isAuthenticated: boolean;
   isAdmin: boolean;
   adminLogin: (username: string, password: string) => Promise<boolean>;
+  userLogin: (email: string, password: string) => Promise<boolean>;
+  userSignup: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
   addXp: (points: number) => void;
@@ -76,6 +78,89 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
+  // Add user login function
+  const userLogin = async (email: string, password: string): Promise<boolean> => {
+    // Simulate API latency
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Check if user exists in localStorage
+    const usersData = localStorage.getItem("skillpath_users");
+    const users = usersData ? JSON.parse(usersData) : [];
+    
+    const matchedUser = users.find((u: any) => u.email === email && u.password === password);
+    
+    if (matchedUser) {
+      // Create user object without password
+      const { password, ...userData } = matchedUser;
+      const loggedInUser: User = {
+        ...userData,
+        joinDate: new Date(userData.joinDate) // Convert date string back to Date object
+      };
+      
+      setUser(loggedInUser);
+      toast({
+        title: "Login Successful",
+        description: "Welcome back to SkillPath!",
+      });
+      return true;
+    }
+    
+    toast({
+      title: "Login failed",
+      description: "Invalid email or password",
+      variant: "destructive",
+    });
+    return false;
+  };
+
+  // Add user signup function
+  const userSignup = async (email: string, password: string): Promise<boolean> => {
+    // Simulate API latency
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Check if email already exists
+    const usersData = localStorage.getItem("skillpath_users");
+    const users = usersData ? JSON.parse(usersData) : [];
+    
+    if (users.some((user: any) => user.email === email)) {
+      toast({
+        title: "Signup failed",
+        description: "Email already in use",
+        variant: "destructive",
+      });
+      return false;
+    }
+    
+    // Create new user
+    const newUser = {
+      id: `user-${Date.now()}`,
+      name: email.split('@')[0], // Default name from email
+      email,
+      password, // In a real app, this would be hashed
+      role: "user",
+      xp: 0,
+      interests: [],
+      weeklyTime: 0,
+      goals: [],
+      badges: [],
+      joinDate: new Date()
+    };
+    
+    // Save to localStorage
+    users.push(newUser);
+    localStorage.setItem("skillpath_users", JSON.stringify(users));
+    
+    // Log the user in (without password in the user state)
+    const { password: pwd, ...userData } = newUser;
+    setUser(userData as User);
+    
+    toast({
+      title: "Account created",
+      description: "Welcome to SkillPath!",
+    });
+    return true;
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem("skillpath_user");
@@ -115,6 +200,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       isAuthenticated, 
       isAdmin,
       adminLogin,
+      userLogin,
+      userSignup,
       logout, 
       updateUser,
       addXp 
