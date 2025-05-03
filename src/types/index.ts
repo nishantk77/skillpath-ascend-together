@@ -1,0 +1,79 @@
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "learner";
+  xp: number;
+  interests: string[];
+  weeklyTime: number;
+  goals: string[];
+  badges: Badge[];
+  joinDate: Date;
+};
+
+export type Badge = {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl: string;
+  dateEarned: Date;
+};
+
+export type Skill = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  difficulty: "beginner" | "intermediate" | "advanced";
+  imageUrl: string;
+  modules: Module[];
+  estimatedWeeks: number;
+};
+
+export type Module = {
+  id: string;
+  title: string;
+  description: string;
+  week: number;
+  status: "not-started" | "in-progress" | "completed";
+  resources: Resource[];
+  estimatedHours: number;
+  xpReward: number;
+};
+
+export type Resource = {
+  id: string;
+  title: string;
+  description: string;
+  type: "video" | "article" | "quiz" | "exercise";
+  url: string;
+  estimatedMinutes: number;
+  creator: string;
+};
+
+export type Discussion = {
+  id: string;
+  skillId: string;
+  moduleId: string;
+  userId: string;
+  userName: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  replies: DiscussionReply[];
+};
+
+export type DiscussionReply = {
+  id: string;
+  discussionId: string;
+  userId: string;
+  userName: string;
+  content: string;
+  createdAt: Date;
+};
+
+export type AdminCredentials = {
+  username: string;
+  password: string;
+};
