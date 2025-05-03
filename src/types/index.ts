@@ -10,6 +10,10 @@ export type User = {
   goals: string[];
   badges: Badge[];
   joinDate: Date;
+  lastLoginDate?: Date;
+  currentStreak?: number;
+  longestStreak?: number;
+  completedModules?: number;
 };
 
 export type Badge = {
@@ -18,7 +22,13 @@ export type Badge = {
   description: string;
   iconUrl: string;
   dateEarned: Date;
+  type: BadgeType;
+  tier?: BadgeTier;
 };
+
+export type BadgeType = "streak" | "completion" | "mastery" | "special";
+
+export type BadgeTier = "bronze" | "silver" | "gold";
 
 export type Skill = {
   id: string;

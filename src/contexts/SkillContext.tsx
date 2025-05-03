@@ -1,6 +1,6 @@
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { Skill, Module } from "@/types";
+import { Skill, Module, Badge } from "@/types";
 import { skills as initialSkills } from "@/data/mockData";
 import { useUser } from "@/contexts/UserContext";
 import { toast } from "@/components/ui/use-toast";
@@ -19,7 +19,7 @@ const SkillContext = createContext<SkillContextType | undefined>(undefined);
 export function SkillProvider({ children }: { children: ReactNode }) {
   const [skills, setSkills] = useState<Skill[]>(initialSkills);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
-  const { user, addXp } = useUser();
+  const { user, addXp, awardBadge } = useUser();
   
   // Save skills to localStorage when they change
   useEffect(() => {
@@ -75,10 +75,45 @@ export function SkillProvider({ children }: { children: ReactNode }) {
           // Create a new skills array with the updated skill
           newSkills[skillIndex] = updatedSkill;
           
-          // If the new status is "completed", award XP
+          // If the new status is "completed", award XP and check for badges
           if (status === "completed") {
             const xpReward = updatedModule.xpReward;
             addXp(xpReward);
+            
+            // Update completed modules count and check for skill mastery
+            if (user) {
+              const completedModules = (user.completedModules || 0) + 1;
+              
+              // Update the user in localStorage to track completed modules
+              const usersData = localStorage.getItem("skillpath_users");
+              if (usersData) {
+                const users = JSON.parse(usersData);
+                const updatedUsers = users.map((u: any) => {
+                  if (u.email === user.email) {
+                    return { ...u, completedModules };
+                  }
+                  return u;
+                });
+                localStorage.setItem("skillpath_users", JSON.stringify(updatedUsers));
+              }
+              
+              // Check for skill mastery - if all modules in a skill are completed
+              const allModulesInSkillCompleted = updatedModules.every(m => m.status === "completed");
+              if (allModulesInSkillCompleted) {
+                // Award skill mastery badge
+                const masteryBadge: Badge = {
+                  id: `skill-mastery-${skillId}-${Date.now()}`,
+                  name: `${updatedSkill.name} Master`,
+                  description: `Completed all modules in ${updatedSkill.name}`,
+                  iconUrl: "", // Empty for now
+                  dateEarned: new Date(),
+                  type: "mastery",
+                  tier: "gold"
+                };
+                
+                awardBadge(masteryBadge);
+              }
+            }
             
             toast({
               title: "Module completed!",

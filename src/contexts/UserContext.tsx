@@ -1,9 +1,10 @@
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { User, AdminCredentials } from "@/types";
+import { User, AdminCredentials, Badge, BadgeType, BadgeTier } from "@/types";
 import { adminCredentials } from "@/data/mockData";
 import { toast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { Award } from "lucide-react";
 
 type UserContextType = {
   user: User | null;
@@ -15,6 +16,9 @@ type UserContextType = {
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
   addXp: (points: number) => void;
+  awardBadge: (badge: Badge) => void;
+  updateStreak: () => void;
+  checkAndAwardBadges: () => void;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -28,7 +32,22 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
+        // Initialize streak-related properties if they don't exist
+        if (!parsedUser.currentStreak) parsedUser.currentStreak = 0;
+        if (!parsedUser.longestStreak) parsedUser.longestStreak = 0;
+        if (!parsedUser.lastLoginDate) parsedUser.lastLoginDate = new Date();
+        if (!parsedUser.completedModules) parsedUser.completedModules = 0;
+        
         setUser(parsedUser);
+        
+        // Check if this is a new day login to update streak
+        const lastLogin = new Date(parsedUser.lastLoginDate);
+        const today = new Date();
+        if (lastLogin.toDateString() !== today.toDateString()) {
+          setTimeout(() => {
+            updateStreak();
+          }, 1000);
+        }
       } catch (err) {
         console.error("Failed to parse stored user:", err);
         localStorage.removeItem("skillpath_user");
@@ -61,7 +80,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
         weeklyTime: 0,
         goals: [],
         badges: [],
-        joinDate: new Date()
+        joinDate: new Date(),
+        lastLoginDate: new Date(),
+        currentStreak: 0,
+        longestStreak: 0,
+        completedModules: 0
       };
       setUser(adminUser);
       toast({
@@ -95,10 +118,24 @@ export function UserProvider({ children }: { children: ReactNode }) {
       const { password, ...userData } = matchedUser;
       const loggedInUser: User = {
         ...userData,
-        joinDate: new Date(userData.joinDate) // Convert date string back to Date object
+        joinDate: new Date(userData.joinDate), // Convert date string back to Date object
+        lastLoginDate: new Date(), // Update last login date
+        currentStreak: userData.currentStreak || 0,
+        longestStreak: userData.longestStreak || 0,
+        completedModules: userData.completedModules || 0
       };
       
       setUser(loggedInUser);
+      
+      // Update the user in localStorage to save streak info
+      const updatedUsers = users.map((u: any) => {
+        if (u.email === email) {
+          return { ...u, lastLoginDate: new Date(), currentStreak: loggedInUser.currentStreak, longestStreak: loggedInUser.longestStreak };
+        }
+        return u;
+      });
+      localStorage.setItem("skillpath_users", JSON.stringify(updatedUsers));
+      
       toast({
         title: "Login Successful",
         description: "Welcome back to SkillPath!",
@@ -144,7 +181,11 @@ export function UserProvider({ children }: { children: ReactNode }) {
       weeklyTime: 0,
       goals: [],
       badges: [],
-      joinDate: new Date()
+      joinDate: new Date(),
+      lastLoginDate: new Date(),
+      currentStreak: 1, // First day streak
+      longestStreak: 1,
+      completedModules: 0
     };
     
     // Save to localStorage
@@ -189,12 +230,192 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     
     const newXp = user.xp + points;
-    setUser({ ...user, xp: newXp });
+    const updatedUser = { ...user, xp: newXp };
+    setUser(updatedUser);
     
     toast({
       title: `+${points} XP`,
       description: "You've earned experience points!",
     });
+    
+    // Check if user should receive XP-based badges
+    checkXpBadges(newXp);
+  };
+
+  const checkXpBadges = (xp: number) => {
+    if (!user) return;
+    
+    // Define XP milestones for badges
+    const xpMilestones = [
+      { xp: 100, tier: "bronze" as BadgeTier },
+      { xp: 500, tier: "silver" as BadgeTier },
+      { xp: 1000, tier: "gold" as BadgeTier },
+    ];
+    
+    // Check if user has reached any milestones
+    for (const { xp: milestone, tier } of xpMilestones) {
+      if (xp >= milestone) {
+        // Check if user already has this badge
+        const hasBadge = user.badges.some(
+          badge => badge.name === `XP Master ${tier}` && badge.type === "mastery"
+        );
+        
+        if (!hasBadge) {
+          // Award new badge
+          const newBadge: Badge = {
+            id: `xp-${tier}-${Date.now()}`,
+            name: `XP Master ${tier}`,
+            description: `Earned ${milestone} XP on your learning journey`,
+            iconUrl: "", // Empty for now
+            dateEarned: new Date(),
+            type: "mastery",
+            tier
+          };
+          
+          awardBadge(newBadge);
+        }
+      }
+    }
+  };
+
+  const awardBadge = (badge: Badge) => {
+    if (!user) return;
+    
+    const updatedBadges = [...user.badges, badge];
+    setUser({ ...user, badges: updatedBadges });
+    
+    toast({
+      title: "🏆 New Badge Earned!",
+      description: `You've earned the "${badge.name}" badge`,
+    });
+  };
+
+  const updateStreak = () => {
+    if (!user) return;
+    
+    // Get the last login date
+    const lastLoginDate = user.lastLoginDate ? new Date(user.lastLoginDate) : new Date();
+    const today = new Date();
+    
+    // Set today as last login date
+    const updatedUser = { ...user, lastLoginDate: today };
+    
+    // Check if this is a new day login
+    if (lastLoginDate.toDateString() !== today.toDateString()) {
+      // Check if the last login was yesterday (to maintain streak)
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (lastLoginDate.toDateString() === yesterday.toDateString()) {
+        // Increment streak
+        const newStreak = (user.currentStreak || 0) + 1;
+        const longestStreak = Math.max(newStreak, user.longestStreak || 0);
+        
+        updatedUser.currentStreak = newStreak;
+        updatedUser.longestStreak = longestStreak;
+        
+        // Check for streak badges
+        checkStreakBadges(newStreak);
+        
+        toast({
+          title: `🔥 ${newStreak} Day Streak!`,
+          description: "Keep up the momentum!",
+        });
+      } else if (lastLoginDate < yesterday) {
+        // Streak broken - reset to 1 for today's login
+        updatedUser.currentStreak = 1;
+        
+        toast({
+          title: "New Streak Started",
+          description: "Login daily to build your streak",
+        });
+      }
+    }
+    
+    setUser(updatedUser);
+  };
+
+  const checkStreakBadges = (streak: number) => {
+    if (!user) return;
+    
+    // Define streak milestones for badges
+    const streakMilestones = [
+      { days: 3, tier: "bronze" as BadgeTier },
+      { days: 7, tier: "silver" as BadgeTier },
+      { days: 30, tier: "gold" as BadgeTier },
+    ];
+    
+    // Check if user has reached any streak milestones
+    for (const { days, tier } of streakMilestones) {
+      if (streak >= days) {
+        // Check if user already has this badge
+        const hasBadge = user.badges.some(
+          badge => badge.name === `${days} Day Streak ${tier}` && badge.type === "streak"
+        );
+        
+        if (!hasBadge) {
+          // Award new badge
+          const newBadge: Badge = {
+            id: `streak-${days}-${Date.now()}`,
+            name: `${days} Day Streak ${tier}`,
+            description: `Logged in for ${days} consecutive days`,
+            iconUrl: "", // Empty for now
+            dateEarned: new Date(),
+            type: "streak",
+            tier
+          };
+          
+          awardBadge(newBadge);
+        }
+      }
+    }
+  };
+
+  // Check for completion badges
+  const checkCompletionBadges = (completedModules: number) => {
+    if (!user) return;
+    
+    // Define completion milestones for badges
+    const completionMilestones = [
+      { modules: 5, tier: "bronze" as BadgeTier },
+      { modules: 15, tier: "silver" as BadgeTier },
+      { modules: 30, tier: "gold" as BadgeTier },
+    ];
+    
+    // Check if user has reached any completion milestones
+    for (const { modules, tier } of completionMilestones) {
+      if (completedModules >= modules) {
+        // Check if user already has this badge
+        const hasBadge = user.badges.some(
+          badge => badge.name === `Module Master ${tier}` && badge.type === "completion"
+        );
+        
+        if (!hasBadge) {
+          // Award new badge
+          const newBadge: Badge = {
+            id: `completion-${modules}-${Date.now()}`,
+            name: `Module Master ${tier}`,
+            description: `Completed ${modules} learning modules`,
+            iconUrl: "", // Empty for now
+            dateEarned: new Date(),
+            type: "completion",
+            tier
+          };
+          
+          awardBadge(newBadge);
+        }
+      }
+    }
+  };
+
+  // Check for all badges at once
+  const checkAndAwardBadges = () => {
+    if (!user) return;
+    
+    // Check different badge types
+    checkXpBadges(user.xp);
+    checkStreakBadges(user.currentStreak || 0);
+    checkCompletionBadges(user.completedModules || 0);
   };
 
   return (
@@ -207,7 +428,10 @@ export function UserProvider({ children }: { children: ReactNode }) {
       userSignup,
       logout, 
       updateUser,
-      addXp 
+      addXp,
+      awardBadge,
+      updateStreak,
+      checkAndAwardBadges
     }}>
       {children}
     </UserContext.Provider>
