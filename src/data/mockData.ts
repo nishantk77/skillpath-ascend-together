@@ -340,17 +340,42 @@ export const sampleUser: User = {
       name: "Fast Starter",
       description: "Completed first module within 24 hours of joining",
       iconUrl: "/badges/fast-starter.svg",
-      dateEarned: new Date("2023-06-15")
+      dateEarned: new Date("2023-06-15"),
+      type: "special"
     },
     {
       id: "badge-2",
       name: "Discussion Pro",
       description: "Posted 5 helpful replies in discussions",
       iconUrl: "/badges/discussion-pro.svg",
-      dateEarned: new Date("2023-06-22")
+      dateEarned: new Date("2023-06-22"),
+      type: "special"
     }
   ],
   joinDate: new Date("2023-06-14")
+};
+
+// Sample curator user
+export const sampleCurator: User = {
+  id: "curator-1",
+  name: "Jamie Smith",
+  email: "jamie@example.com",
+  role: "curator",
+  xp: 1500,
+  interests: ["Web Development", "Data Science"],
+  weeklyTime: 20,
+  goals: ["Create quality educational content", "Help students succeed"],
+  badges: [
+    {
+      id: "badge-3",
+      name: "Content Creator",
+      description: "Created 10 educational resources",
+      iconUrl: "/badges/creator.svg",
+      dateEarned: new Date("2023-05-10"),
+      type: "special"
+    }
+  ],
+  joinDate: new Date("2023-01-10")
 };
 
 // Sample discussions
@@ -412,34 +437,39 @@ export const availableBadges: Badge[] = [
     name: "Fast Starter",
     description: "Completed first module within 24 hours of joining",
     iconUrl: "/badges/fast-starter.svg",
-    dateEarned: new Date()
+    dateEarned: new Date(),
+    type: "special"
   },
   {
     id: "badge-2",
     name: "Discussion Pro",
     description: "Posted 5 helpful replies in discussions",
     iconUrl: "/badges/discussion-pro.svg",
-    dateEarned: new Date()
+    dateEarned: new Date(),
+    type: "special"
   },
   {
     id: "badge-3",
     name: "Week Streak",
     description: "Completed modules for 3 weeks in a row",
     iconUrl: "/badges/week-streak.svg",
-    dateEarned: new Date()
+    dateEarned: new Date(),
+    type: "streak"
   },
   {
     id: "badge-4",
     name: "Resource Master",
     description: "Completed all resources in a module",
     iconUrl: "/badges/resource-master.svg",
-    dateEarned: new Date()
+    dateEarned: new Date(),
+    type: "completion"
   },
   {
     id: "badge-5",
     name: "XP Champion",
     description: "Earned over 1000 XP",
     iconUrl: "/badges/xp-champion.svg",
-    dateEarned: new Date()
+    dateEarned: new Date(),
+    type: "special"
   }
 ];

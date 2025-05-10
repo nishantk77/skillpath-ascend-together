@@ -22,6 +22,7 @@ import DiscussionsPage from "./pages/DiscussionsPage";
 import ProfilePage from "./pages/ProfilePage";
 import BadgesPage from "./pages/BadgesPage";
 import AdminPage from "./pages/AdminPage";
+import ResourceManagementPage from "./pages/ResourceManagementPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/badges" element={<BadgesPage />} />
                 <Route path="/admin" element={<AdminPage />} />
+                <Route path="/resources" element={<ResourceManagementPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>

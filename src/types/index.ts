@@ -3,7 +3,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "learner";
+  role: "admin" | "learner" | "curator";
   xp: number;
   interests: string[];
   weeklyTime: number;
@@ -60,6 +60,8 @@ export type Resource = {
   url: string;
   estimatedMinutes: number;
   creator: string;
+  createdAt: Date;
+  curatorId?: string;
 };
 
 export type Discussion = {
@@ -86,4 +88,29 @@ export type DiscussionReply = {
 export type AdminCredentials = {
   username: string;
   password: string;
+};
+
+// Quiz specific types
+export type Quiz = {
+  id: string;
+  title: string;
+  description: string;
+  moduleId: string;
+  questions: QuizQuestion[];
+  createdAt: Date;
+  curatorId: string;
+  estimatedMinutes: number;
+};
+
+export type QuizQuestion = {
+  id: string;
+  text: string;
+  options: QuizOption[];
+  correctOptionId: string;
+  explanation: string;
+};
+
+export type QuizOption = {
+  id: string;
+  text: string;
 };
