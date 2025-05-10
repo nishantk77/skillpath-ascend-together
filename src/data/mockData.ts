@@ -57,7 +57,8 @@ const webDevModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 45,
-        creator: "Web Dev Simplified"
+        creator: "Web Dev Simplified",
+        createdAt: new Date("2023-01-15")
       },
       {
         id: "res-2",
@@ -66,7 +67,8 @@ const webDevModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 30,
-        creator: "MDN Web Docs"
+        creator: "MDN Web Docs",
+        createdAt: new Date("2023-01-20")
       },
       {
         id: "res-3",
@@ -75,7 +77,8 @@ const webDevModules: Module[] = [
         type: "exercise",
         url: "#",
         estimatedMinutes: 60,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-01-25")
       }
     ],
     estimatedHours: 6,
@@ -95,7 +98,8 @@ const webDevModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 55,
-        creator: "Traversy Media"
+        creator: "Traversy Media",
+        createdAt: new Date("2023-02-01")
       },
       {
         id: "res-5",
@@ -104,7 +108,8 @@ const webDevModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 40,
-        creator: "CSS-Tricks"
+        creator: "CSS-Tricks",
+        createdAt: new Date("2023-02-05")
       },
       {
         id: "res-6",
@@ -113,7 +118,8 @@ const webDevModules: Module[] = [
         type: "quiz",
         url: "#",
         estimatedMinutes: 15,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-02-10")
       }
     ],
     estimatedHours: 7,
@@ -133,7 +139,8 @@ const webDevModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 60,
-        creator: "Academind"
+        creator: "Academind",
+        createdAt: new Date("2023-02-15")
       },
       {
         id: "res-8",
@@ -142,7 +149,8 @@ const webDevModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 25,
-        creator: "JavaScript.info"
+        creator: "JavaScript.info",
+        createdAt: new Date("2023-02-20")
       },
       {
         id: "res-9",
@@ -151,7 +159,8 @@ const webDevModules: Module[] = [
         type: "exercise",
         url: "#",
         estimatedMinutes: 90,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-02-25")
       }
     ],
     estimatedHours: 8,
@@ -175,7 +184,8 @@ const uiUxModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 50,
-        creator: "Design Course"
+        creator: "Design Course",
+        createdAt: new Date("2023-03-01")
       },
       {
         id: "res-11",
@@ -184,7 +194,8 @@ const uiUxModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 35,
-        creator: "UX Planet"
+        creator: "UX Planet",
+        createdAt: new Date("2023-03-05")
       },
       {
         id: "res-12",
@@ -193,7 +204,8 @@ const uiUxModules: Module[] = [
         type: "exercise",
         url: "#",
         estimatedMinutes: 45,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-03-10")
       }
     ],
     estimatedHours: 6,
@@ -213,7 +225,8 @@ const uiUxModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 65,
-        creator: "Nielsen Norman Group"
+        creator: "Nielsen Norman Group",
+        createdAt: new Date("2023-03-15")
       },
       {
         id: "res-14",
@@ -222,7 +235,8 @@ const uiUxModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 30,
-        creator: "Interaction Design Foundation"
+        creator: "Interaction Design Foundation",
+        createdAt: new Date("2023-03-20")
       },
       {
         id: "res-15",
@@ -231,7 +245,8 @@ const uiUxModules: Module[] = [
         type: "quiz",
         url: "#",
         estimatedMinutes: 20,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-03-25")
       }
     ],
     estimatedHours: 7,
@@ -255,7 +270,8 @@ const dataScienceModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 70,
-        creator: "DataCamp"
+        creator: "DataCamp",
+        createdAt: new Date("2023-04-01")
       },
       {
         id: "res-17",
@@ -264,7 +280,8 @@ const dataScienceModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 45,
-        creator: "Towards Data Science"
+        creator: "Towards Data Science",
+        createdAt: new Date("2023-04-05")
       },
       {
         id: "res-18",
@@ -273,7 +290,8 @@ const dataScienceModules: Module[] = [
         type: "exercise",
         url: "#",
         estimatedMinutes: 90,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-04-10")
       }
     ],
     estimatedHours: 9,
@@ -293,7 +311,8 @@ const dataScienceModules: Module[] = [
         type: "video",
         url: "#",
         estimatedMinutes: 55,
-        creator: "Data School"
+        creator: "Data School",
+        createdAt: new Date("2023-04-15")
       },
       {
         id: "res-20",
@@ -302,7 +321,8 @@ const dataScienceModules: Module[] = [
         type: "article",
         url: "#",
         estimatedMinutes: 40,
-        creator: "Real Python"
+        creator: "Real Python",
+        createdAt: new Date("2023-04-20")
       },
       {
         id: "res-21",
@@ -311,7 +331,8 @@ const dataScienceModules: Module[] = [
         type: "exercise",
         url: "#",
         estimatedMinutes: 100,
-        creator: "SkillPath"
+        creator: "SkillPath",
+        createdAt: new Date("2023-04-25")
       }
     ],
     estimatedHours: 8,

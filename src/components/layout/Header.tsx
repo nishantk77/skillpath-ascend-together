@@ -11,13 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/contexts/UserContext";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
-  const { isMobile } = useMobile();
+  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const handleLogout = () => {
